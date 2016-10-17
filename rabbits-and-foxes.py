@@ -1,10 +1,9 @@
 
 # In[5]:
 
-get_ipython().magic('matplotlib inline') #This line returns an error message whenever I try to run it in PyCharm - is it a module of some kind?
-import numpy as np
-from matplotlib import pyplot as plt #PyCharm won't let me install matplotlib - I keep getting an error message whenever I try to
 
+import numpy as np
+from matplotlib import pyplot as plt
 
 # In[48]:
 
@@ -20,22 +19,13 @@ k3 = 0.0004
 k4 = 0.04
 dt = 0.05
 
-
-# In[49]:
-
 #for i in range(1,8000-1):
 for i in range(1,len(R)-1):
     R[i+1], F[i+1] = R[i] + dt *(k1 * R[i] - k2 * R[i] * F[i]), F[i] + dt *(k3 * R[i] * F[i] - k4 * F[i])
 
-
-# In[50]:
-
 plt.plot(R)
 plt.plot(F)
 plt.show()
-
-
-# In[65]:
 
 N=18000
 dt = 0.05
@@ -61,20 +51,10 @@ plt.xlabel('t')
 plt.grid()
 plt.show()
 
-
-# In[57]:
-
-get_ipython().magic('pinfo odeint')
-
-
-# In[43]:
-
-get_ipython().magic('matplotlib inline')
-import numpy as np
-from matplotlib import pyplot as plt
 import random
+import cProfile
 #random.seed(1) 
-from mpi4py import MPI
+from mpi4py import MPI # I got Anaconda installed and running properly, but PyCharm still insists there is no such thing as the 'mpi4py' module. At least, it's not on the list of site packages
 from mpi4py.MPI import ANY_SOURCE
 
 comm = MPI.COMM_WORLD #What does this part do?
@@ -233,9 +213,7 @@ else:
     plt.show()
     print("Second peak (foxes) is {:.1f} with IQR [{:.1f}-{:.1f}] ".format(mean_foxes[-1], lower_quartile_foxes[-1], upper_quartile_foxes[-1]))
 
-
-
-# In[ ]:
+cProfile.run(random)
 
 
 
