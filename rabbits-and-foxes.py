@@ -1,9 +1,9 @@
 
 # In[5]:
 
-get_ipython().magic('matplotlib inline')
+get_ipython().magic('matplotlib inline') #This line returns an error message whenever I try to run it in PyCharm - is it a module of some kind?
 import numpy as np
-from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt #PyCharm won't let me install matplotlib - I keep getting an error message whenever I try to
 
 
 # In[48]:
@@ -45,7 +45,7 @@ k2 = 0.00004
 k3 = 0.0004
 k4 = 0.04
 
-from scipy.integrate import odeint
+from scipy.integrate import odeint #PyCharm won't let me install the scipy package, for some reason
 def pend(y,t):
     R,F = y
     dydt=[k1*R-k2*R*F,k3*R*F-k4*F]
@@ -77,7 +77,7 @@ import random
 from mpi4py import MPI
 from mpi4py.MPI import ANY_SOURCE
 
-comm = MPI.COMM_WORLD
+comm = MPI.COMM_WORLD #What does this part do?
 rank = comm.Get_rank()
 size = comm.Get_size()
 
@@ -179,7 +179,7 @@ for run in range(runs):
         plt.plot(times, rabbits, 'b')
         plt.plot(times, foxes, 'g')
         
-if rank !=0:
+if rank !=0: #Clarify - what does this part do?
     comm.Send(mean_times[-1] , dest=0, tag=111)
     comm.Send(mean_foxes[-1] , dest=0, tag=222)
     comm.Send(runs , dest=0, tag=333)       
