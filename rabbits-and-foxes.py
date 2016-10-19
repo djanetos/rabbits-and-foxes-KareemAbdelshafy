@@ -4,60 +4,13 @@
 
 import numpy as np
 from matplotlib import pyplot as plt
-
-# In[48]:
-
-N=18000
-times=(np.arange(0,N))
-R = np.zeros(N)
-R[1] = 400
-F = np.zeros(N)
-F[1] = 200
-k1 = 0.015
-k2 = 0.00004
-k3 = 0.0004
-k4 = 0.04
-dt = 0.05
-
-#for i in range(1,8000-1):
-for i in range(1,len(R)-1):
-    R[i+1], F[i+1] = R[i] + dt *(k1 * R[i] - k2 * R[i] * F[i]), F[i] + dt *(k3 * R[i] * F[i] - k4 * F[i])
-
-plt.plot(R)
-plt.plot(F)
-plt.show()
-
-N=18000
-dt = 0.05
-t=(np.arange(0,N))*dt
-k1 = 0.015
-k2 = 0.00004
-k3 = 0.0004
-k4 = 0.04
-
-from scipy.integrate import odeint #PyCharm won't let me install the scipy package, for some reason
-def pend(y,t):
-    R,F = y
-    dydt=[k1*R-k2*R*F,k3*R*F-k4*F]
-    return dydt
-
-y0=[400. , 200.]
-
-sol = odeint(pend, y0, t)
-plt.plot(t, sol[:, 0], 'b', label='Rabbits')
-plt.plot(t, sol[:, 1], 'g', label='Foxes')
-plt.legend(loc='best')
-plt.xlabel('t')
-plt.grid()
-plt.show()
-
 import random
 import cProfile
-#random.seed(1) 
-from mpi4py import MPI # I got Anaconda installed and running properly, but PyCharm still insists there is no such thing as the 'mpi4py' module. At least, it's not on the list of site packages
+from mpi4py import MPI
 from mpi4py.MPI import ANY_SOURCE
 
-comm = MPI.COMM_WORLD #What does this part do?
+
+comm = MPI.COMM_WORLD  # What does this part do?
 rank = comm.Get_rank()
 size = comm.Get_size()
 
@@ -66,6 +19,7 @@ k2 = 0.00004
 k3 = 0.0004
 k4 = 0.04
 end_time = 600
+
 
 def get_rates(rabbits, foxes):
     """
@@ -76,7 +30,7 @@ def get_rates(rabbits, foxes):
     rabbit_death = k2 * rabbits * foxes
     fox_birth = k3 * rabbits * foxes 
     fox_death = k4 * foxes
-    return (rabbit_birth, rabbit_death, fox_birth, fox_death)
+    return rabbit_birth, rabbit_death, fox_birth, fox_death
 
 dead_foxes = 0
 dead_everything = 0
@@ -115,7 +69,7 @@ for run in range(runs):
             rabbits.append(rabbit)
             foxes.append(fox)
             break
-        wait_time = random.expovariate( sum_rates )
+        wait_time = random.expovariate(sum_rates)
         time += wait_time
         choice = random.uniform(0, sum_rates)
         # Imagine we threw a dart at a number line with span (0, sum_rates) and it hit at "choice"
@@ -128,7 +82,7 @@ for run in range(runs):
         if choice < 0:
             fox -= 1 # fox died
             if fox == 0:
-                #print("Foxes all died at t=",time)
+                # print("Foxes all died at t=",time)
                 dead_foxes += 1
                 ## Break here to speed things up (and not track the growing rabbit population)
             continue
@@ -159,7 +113,7 @@ for run in range(runs):
         plt.plot(times, rabbits, 'b')
         plt.plot(times, foxes, 'g')
         
-if rank !=0: #Clarify - what does this part do?
+if rank !=0:  # Clarify - what does this part do?
     comm.Send(mean_times[-1] , dest=0, tag=111)
     comm.Send(mean_foxes[-1] , dest=0, tag=222)
     comm.Send(runs , dest=0, tag=333)       
@@ -212,8 +166,6 @@ else:
     plt.xlim(10)
     plt.show()
     print("Second peak (foxes) is {:.1f} with IQR [{:.1f}-{:.1f}] ".format(mean_foxes[-1], lower_quartile_foxes[-1], upper_quartile_foxes[-1]))
-
-cProfile.run(random)
 
 
 
